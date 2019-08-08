@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
   // Set up the logging callback and enable debug logging
   DLOG(INFO) << "Setting the cb";
   event_set_log_callback(logCob);
-  event_enable_debug_logging(EVENT_DBG_ALL);
+  event_enable_debug_mode();
   event_set_fatal_callback(fatalCob);
 
   DLOG(INFO) << "Getting the event_base";
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
   ASSERTNOERR(setsockopt(fortuneSockFd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) > 0);
   
   // 2. Bind it to a port.
-  const int TIME_SERVICE_PORT = 8080;
+  const int TIME_SERVICE_PORT = 9090;
   const int LISTEN_QUEUE = 100;
   sockaddr_in fortuneSrvAddr;
   bzero(&fortuneSrvAddr, sizeof(struct sockaddr_in));
