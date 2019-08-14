@@ -23,7 +23,7 @@ DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where t
 /*
  * Set up eventlib to use glog
  */
-static void logCB(int sev, const char* msg) {
+static void log_CB(int sev, const char* msg) {
   switch (sev) {
   case _EVENT_LOG_DEBUG: DLOG(INFO) << msg; break;
   case _EVENT_LOG_WARN: LOG(WARNING) << msg; break;
@@ -33,11 +33,11 @@ static void logCB(int sev, const char* msg) {
   }
 }
 
-static void fatalCB(int err) {
+static void fatal_CB(int err) {
   LOG(FATAL) << "Something went wrong. Fatal-ing with error: " << err;
 }
 
-static void stdinReadCB(int fd, short what, void* eb) {
+static void stdin_read_CB(int fd, short what, void* eb) {
   DLOG(INFO) << "stdin is ready for reading";
 
   if(!cin.good()) {
@@ -45,11 +45,11 @@ static void stdinReadCB(int fd, short what, void* eb) {
     exit(0);
   }
   
-  string inString;
-  getline (cin, inString);
+  string in_string;
+  getline (cin, in_string);
 
-  cerr << ">>>>> " << inString << "\n";
-  VLOG(4) << "stdin:  " << inString;
+  cerr << ">>>>> " << in_string << "\n";
+  VLOG(4) << "stdin:  " << in_string;
 }
 
 int main(int argc, char* argv[]) {
@@ -58,8 +58,8 @@ int main(int argc, char* argv[]) {
 
   // Set up the logging callbacks
   DLOG(INFO) << "Passing logging callbacks to eventlib";
-  event_set_log_callback(logCB);
-  event_set_fatal_callback(fatalCB);
+  event_set_log_callback(log_CB);
+  event_set_fatal_callback(fatal_CB);
   //event_enable_debug_mode(); // enables a bunch of verbosity; compute-intensive so may disable
 
   // Set up the eventlib fundamentals
@@ -72,8 +72,8 @@ int main(int argc, char* argv[]) {
   // Connect to the Decent device
   DLOG(INFO) << "Connecting to Decent device at " << FLAGS_decent_device_path;
 
-  int stdinFD = STDIN_FILENO;
-  event* stdinRead = event_new(eb, stdinFD, EV_READ | EV_PERSIST, stdinReadCB, eb);
+  int stdin_fd = STDIN_FILENO;
+  event* stdinRead = event_new(eb, stdin_fd, EV_READ | EV_PERSIST, stdin_read_CB, eb);
   event_add(stdinRead, NULL);
   event_base_dispatch(eb);
 }
