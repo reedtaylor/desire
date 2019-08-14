@@ -1,7 +1,7 @@
 
 CC := g++
 CFLAGS := 
-LIBS := -levent -lglog
+LIBS := -levent -lglog -lgflags
 
 PROGS := de2stdio
 
