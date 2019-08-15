@@ -1,3 +1,4 @@
+#define NDEBUG 0
 #define NO_DE 0
 
 #define CHARBUF_SIZE 1024
