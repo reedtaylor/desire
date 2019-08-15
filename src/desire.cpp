@@ -6,6 +6,7 @@
 #include <glog/logging.h>
 #include <gflags/gflags.h>
 #include <cassert>
+#include <signal.h>
 #include <string>
 #include <cstring>
 #include <fcntl.h>
@@ -19,10 +20,19 @@
 
 using namespace std;
 
+void SignalHandler(int s){
+  LOG(INFO) << "Caught signal " << s << " -- flushing and exiting";
+  google::FlushLogFiles(google::INFO);
+  exit(1); 
+}
+
 int main(int argc, char* argv[]) {
   google::InitGoogleLogging(argv[0]);
   google::ParseCommandLineFlags(&argc, &argv, true);
 
+  // Catch SIGINT so we can flush the logs
+  signal (SIGINT,SignalHandler);
+  
   // Struct for passing around key pointers and other state
   DesireState *desire_state = new DesireState;
 
