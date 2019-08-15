@@ -27,15 +27,18 @@ And, just to put it out there: DESIRE does not want to enable off-label behavior
 
 At the outset, the project is envisioned to move through 3 major milestones:
 
-__Milestone 1, aka "de2stdio":__  This will be a proof-of-concept standalone executable that transparently bridges the existing serial spec from the DE UART to stdio.  This should be trivial to do because Ray's serial spec just sends ascii messages of the form
-_image coming_
+__Milestone 1, aka "bridge of desire":__ This executable will transparently bridge the existing serial spec from the DE UART to any TCP connection to a specific port, as well as (optionally) to local stdio on the RPi. This is pretty easy to do because Ray's serial specs just send ascii messages of roughly this form:
+(image coming)
 
-... and all this binary will do is blindly bridge messages of that form back and forth from the decnt UART to stdio on the RPi.  This does not define any new API or interface, it just cracks open the door to "BLE free" comms between the DE and a single controller.  May add a command line interface and some other conveniences for debugging / stress testing the UART interface implementation.
+What this binary does is bridge messages of that form back and forth from the decent UART to the other interfaces.  I may build  be some internal management of e.g. subscribers to various forms of messages, but it's not clear how important / robust that needs to be since the DE machine itself is chatty and doesn't seem to pay much attention to the "unsubscribe" messages I have played with so far.  I may also do mild protocol checking / packet dropping in cases of wildly malformed comms, to prevent hard-to-fix weirdnesses.
 
-__Milestone 2, aka "bridge of desire":__ This will be the beginning of the deeper project, designed to enable multiple controllers to talk to a single DE at the same time.   However at M2 we will support only exactly two controller interfaces: stdio and the BLE device native to the RPi.  This will allow the original, stock tablet to be re-paired to the DESIRE-equipped DE machine, which will restore full functionality while still leaving room for a single other project to interface with the machine via stdio.  Or for two custom interfaces to talk to the machine, one on BLE and one on stdio, I don't care.
+This setup does not define any new API or protocol.  It's literally what's on the existing DE UART.
 
-Likely in this phase the project will need to migrate to a multithreaded model, if that doesn't happen in M1.
+Note: stdio / command line comms are probably not useful to people other than me; it does allow me to easily test buffering / error checking / etc. while also blowing some smoke through the pipes of the event-driven system.   (I might add some pretty-printing or other conveniences later on.)
 
-__Milestone 3, aka "desire fulfilled"__ This will add two more key interfaces:
-- Bridging to TCP socket, which is probably what a lot of people interested in this project would want
-- Bridging to USB which I think might save some folks' bacon at tradeshows.
+But with TCP sockets, this milestone opens the door to "BLE free" comms between the DE and controllers running either on the RPi or on a local network.  Also multiple controllers will be able to talk to a single DE at the same time without developers needing to worry about it much.
+
+__Milestone 2, aka "desire fulfilled":__ This milestone will add two additional forms of bridging:
+Bridging to the BLE device native to the RPi. This will allow the original, stock tablet to be re-paired to a DESIRE-equipped DE machine, which will restore full functionality, while still leaving room for other projects to interface with the machine via TCP.  This is probably a big win for folks who don't want to mess with wires more than once.
+Hopefully, we will also achieve bridging via wired USB which I think might save some folks' bacon at tradeshows.  
+
