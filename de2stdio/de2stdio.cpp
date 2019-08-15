@@ -1,6 +1,4 @@
-#define NDEBUG 0
 #define NO_DE 0
-
 
 #define CHARBUF_SIZE 1024
 
@@ -27,6 +25,10 @@ using namespace std;
 DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where the Decent machine is connected");
 
 
+#if !NO_DE
+int de_serial_fd; // global file descriptor for the machine's serial port
+#endif
+
 /*
  * Set up eventlib to use glog
  */
@@ -45,8 +47,6 @@ static void fatal_CB(int err) {
 }
 
 static void stdin_read_CB(int fd, short what, void* arg) {
-  DLOG(INFO) << "stdin is readable";
-
   if(!cin.good()) {
     LOG(INFO) << "stdin died";
     exit(0);
@@ -57,12 +57,23 @@ static void stdin_read_CB(int fd, short what, void* arg) {
   
   cerr << ">> STDIN >> " << in_string << "\n";
   VLOG(4) << "stdin:  " << in_string;
+
+#if !NO_DE
+  DLOG(INFO) << "stdin reopening DE for writing";
+  FILE *de_serial = fdopen(de_serial_fd, "r+");
+  if (!de_serial) {
+    LOG(INFO) << "DE serial died";
+    exit(0);
+  }
+
+  fputs(in_string.c_str(), de_serial);
+  fputc('\n', de_serial);
+  LOG(INFO) << "stdin wrote '" << in_string << "' to DE";
+#endif
 }
 
 #if !NO_DE
 static void de_read_CB(int fd, short what, void* arg) {
-  DLOG(INFO) << "DE serial is readable";
-
   FILE *de_serial = fdopen(fd, "r+");
   if (!de_serial) {
     LOG(INFO) << "DE serial died";
@@ -77,8 +88,6 @@ static void de_read_CB(int fd, short what, void* arg) {
 
   cerr << ">>> DE >>>> " << in_string << "\n";
   VLOG(4) << "DE:     " << in_string;
-  
-  
 }
 #endif
   
@@ -104,14 +113,31 @@ int main(int argc, char* argv[]) {
 #if !NO_DE
   // Connect to the Decent device
   DLOG(INFO) << "Connecting to Decent device at " << FLAGS_decent_device_path;
+
   FILE *de_serial = fopen(FLAGS_decent_device_path.c_str(), "r+");
-  if (!de_serial) {
+  de_serial_fd = fileno(de_serial);
+
+  if (de_serial_fd < 0) {
     LOG(FATAL) << "Could not open DE serial interface " << FLAGS_decent_device_path << " -- Error: " << strerror(errno);
   }
   LOG(INFO) << "Opened DE machine serial file at " << FLAGS_decent_device_path;
 
+  // set the other settings for the serial port (115200 8N1)
+  struct termios settings;
+  tcgetattr(de_serial_fd, &settings);
+
+  speed_t baud = B115200; /* baud rate */
+  cfsetospeed(&settings, baud); /* baud rate */
+  settings.c_cflag &= ~PARENB; /* no parity */
+  settings.c_cflag &= ~CSTOPB; /* 1 stop bit */
+  settings.c_cflag &= ~CSIZE;
+  settings.c_cflag |= CS8 | CLOCAL; /* 8 bits */
+  settings.c_lflag = ICANON; /* canonical mode */
+  settings.c_oflag &= ~OPOST; /* raw output */
+  tcsetattr(de_serial_fd, TCSANOW, &settings); /* apply the settings */
+  tcflush(de_serial_fd, TCOFLUSH);
+  
   // Setup read callback event for DE serial device
-  int de_serial_fd = fileno(de_serial);
   event* de_read = event_new(eb, de_serial_fd, EV_READ | EV_PERSIST, de_read_CB, eb);
   event_add(de_read, NULL);
 #endif
