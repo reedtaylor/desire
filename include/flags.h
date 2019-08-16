@@ -4,9 +4,9 @@
 #include <gflags/gflags.h>
 
 /*
- * Define command line flags (via gflags)
+ * Declare command line flags (via gflags)
  * These can be referenced using FLAGS_[name]
+ * They are individually DEFINE_'d in the most relevant .cpp file
  */
-DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where the Decent machine is connected");
 
 #endif

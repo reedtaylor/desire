@@ -1,6 +1,8 @@
 #ifndef _EVENTS_H
 #define _EVENTS_H
 
-event_base* SetupEventBase();
+#include "desire_util.h"
+
+void SetupEventBase(DesireState *desire_state);
 
 #endif

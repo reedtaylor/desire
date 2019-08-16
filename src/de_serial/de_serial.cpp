@@ -7,7 +7,14 @@
 #include <gflags/gflags.h>
 
 #include "desire_util.h"
-#include "flags.h"
+
+
+/*
+ * Define command line flags (via gflags)
+ * These can be referenced using FLAGS_[name]
+ */
+DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where the Decent machine is connected");
+
 
 /* 
  * callback for the DE serial port read events

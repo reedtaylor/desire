@@ -27,7 +27,7 @@ static void eventlib_fatal_CB(int err) {
 /*
  * Initialize the event_base and return it
  */
-event_base * SetupEventBase() {
+void SetupEventBase(DesireState *desire_state) {
 
   DLOG(INFO) << "Generating the event_base for primary reads";
   event_base* eb = event_base_new();
@@ -40,6 +40,6 @@ event_base * SetupEventBase() {
   event_set_fatal_callback(eventlib_fatal_CB);
   //event_enable_debug_mode(); // verbose & compute intensive
 
-  return eb; 
+  desire_state->eb = eb;
 }
 

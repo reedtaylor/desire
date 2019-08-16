@@ -1,22 +1,14 @@
 #include <iostream>
-#include <cstdio>
-#include <fstream>
-#include <vector>
 #include <event2/event.h>
 #include <glog/logging.h>
 #include <gflags/gflags.h>
 #include <cassert>
 #include <signal.h>
-#include <string>
-#include <cstring>
-#include <fcntl.h>
-#include <termios.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 #include "desire_util.h"
 #include "events.h"
 #include "de_serial/de_serial.h"
+#include "stdio_serial/stdio_serial.h"
 
 using namespace std;
 
@@ -36,11 +28,14 @@ int main(int argc, char* argv[]) {
   // Struct for passing around key pointers and other state
   DesireState *desire_state = new DesireState;
 
-  // Generate the Event Base from eventlib
-  desire_state->eb = SetupEventBase();
+  // Generate & configure the Event Base from eventlib
+  SetupEventBase(desire_state);
 
-  // Initialize decent serial port
+  // Initialize decent serial port and add to event loop
   SetupDESerial(desire_state);  
+
+  // Initialize stdio serial interface and add to event loop
+  SetupStdioSerial(desire_state);  
 
   // launch the event handler loop
   event_base_dispatch(desire_state->eb);
