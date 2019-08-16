@@ -8,14 +8,17 @@
 
 #include "desire_util.h"
 #include "flags.h"
+#include "dispatch.h"
 
 /* 
  * callback for the stdio read events
  */
 static void stdio_read_CB(__attribute__ ((unused)) int fd,
 		       __attribute__ ((unused)) short what,
-		       __attribute__ ((unused)) void *desire_state_ptr) {
-
+		       void *desire_state_ptr) {
+  
+  DesireState *desire_state = (DesireState *)desire_state_ptr;
+  
   if (!std::cin.good()) {
     LOG(INFO) << "stdin died";
     exit(0);
@@ -25,7 +28,8 @@ static void stdio_read_CB(__attribute__ ((unused)) int fd,
   std::cin >> in_string;
 
   VLOG(4) << "STDIN:  " << in_string;
-  std::cerr << ">> STDIN >> " << in_string << "\n"; // todo replace this with propagation
+  //std::cerr << ">> STDIN >> " << in_string << "\n"; // todo replace this with propagation
+  DispatchToDE(in_string, desire_state);
 }
 
 

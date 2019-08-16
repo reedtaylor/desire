@@ -7,6 +7,7 @@
 #include <gflags/gflags.h>
 
 #include "desire_util.h"
+#include "dispatch.h"
 
 
 /*
@@ -38,7 +39,8 @@ static void de_read_CB(__attribute__ ((unused)) int fd,
   }
 
   VLOG(4) << "DE:     " << in_string;
-  std::cerr << ">>> DE >>>> " << in_string << "\n"; // todo replace this with propagation
+  //std::cerr << ">>> DE >>>> " << in_string << "\n"; // todo replace this with propagation
+  DispatchFromDE(in_string, desire_state);
 }
 
 
