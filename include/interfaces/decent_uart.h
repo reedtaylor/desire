@@ -1,9 +1,10 @@
-#ifndef _DE_SERIAL_H
-#define _DE_SERIAL_H
+#ifndef _DECENT_UART_H
+#define  _DECENT_UART_H
 
 #include <gflags/gflags.h>
 
-#include "desire_util.h"
+#include "interface.h"
+#include "listenable.h"
 
 /*
  * Declare command line flags (via gflags)
@@ -12,7 +13,15 @@
  */
 DECLARE_string(decent_device_path);
 
+class DecentUart : public Interface {
 
-void SetupDESerial(DesireState *desire_state);
+public:
+  DecentUart() {};
+  
+private:
+  FILE *_file_handle;
+
+};
+
 
 #endif
