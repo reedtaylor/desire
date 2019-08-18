@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 
 #include "interface.h"
+#include "tcp_socket.h"
 
 void Dispatcher::Init() {
   LOG(INFO) << "Dispatcher: Initializing";
@@ -24,6 +25,10 @@ void Dispatcher::Init() {
   StdioInterface *stdio_interface = new StdioInterface();
   stdio_interface->Init(this);
   AddController(stdio_interface);
+
+  TcpSocket *tcp_socket = new TcpSocket();
+  tcp_socket->Init(this);
+  AddReadEventForTcpSocket(tcp_socket);
 }
 
 
@@ -88,6 +93,23 @@ void Dispatcher::AddReadEventForInterface(Interface *interface) {
 
   LOG(INFO) << "Dispatcher: Added read event for controller " << interface->GetInterfaceName();
 }
+
+
+void Dispatcher::AddReadEventForTcpSocket(TcpSocket *socket) {
+  CHECK_NOTNULL(_event_base);
+  CHECK_NOTNULL(_event_base->eb);
+
+  event* new_event = event_new(_event_base->eb, 
+			       socket->GetFileDescriptor(),
+			       EV_READ | EV_PERSIST,
+			       TcpSocket::CallBack,
+			       socket);
+  event_add(new_event, NULL);
+
+  LOG(INFO) << "Dispatcher: Added read event for TCP Socket";
+  
+}
+
 
 void Dispatcher::RunDispatchLoop() {
   event_base_dispatch(_event_base->eb);

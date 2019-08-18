@@ -7,6 +7,8 @@
 #include "interface.h"
 #include "interfaces/decent_uart.h"
 #include "interfaces/stdio_interface.h"
+#include "tcp_socket.h"
+#include "interfaces/tcp_interface.h"
 #include "event_base.h"
 
 // Dispatcher -- this class is the heart of the desire system functioning
@@ -55,6 +57,15 @@ class Dispatcher {
   // it into the EventBase wrapper class as it doesn't totally make
   // sense to be implemented here
   void AddReadEventForInterface(Interface *interface);
+
+  // Wrapper function around the eventLib event_new() call that
+  // places an individual read event on the event_base (for a tcp socket
+  // rather than a controller)
+  //
+  // todo: either make this a protected/private member function, or move
+  // it into the EventBase wrapper class as it doesn't totally make
+  // sense to be implemented here
+  void AddReadEventForTcpSocket(TcpSocket *socket);
 
   // Wrapper function around the event_base_dispatch call.  This has the
   // effect of kicking off the "busy loop" at the heart of the system
