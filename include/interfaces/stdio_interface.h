@@ -10,10 +10,10 @@ class Dispatcher; // forward reference
 // 2-way ascii on stdio.
 //
 // In the not too distant future want to handle the following:
-// - todo: optionally pretty print
-// - todo: optionally sanity check for well formed messages / typos / upcase
+// - todo: optionally pretty print (issue #9)
+// - todo: optionally sanity check for well formed messages / typos / upcase (issue #10)
 // - todo: replicate this but for named pipes which will be a lot more
-//         usable for local comms with programs that want to open files
+//         usable for local comms with programs that want to open files (issue #8)
 //
 // For details on what an Interface class needs/does see that base
 // class interface.h directly
@@ -37,7 +37,7 @@ class StdioInterface : public Interface {
   const std::string GetInterfaceName() override;
   
   // take a string from the callback annd pass it to the dispatcher
-  // todo: this is dumb and should go away into the base class callback
+  // todo: this is dumb and should go away into the base class callback (issue #16)
   void ReadCB() override;
 
   // return the file descriptor for the UART serial device
