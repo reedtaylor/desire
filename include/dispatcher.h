@@ -5,6 +5,9 @@
 #include <vector>
 
 #include "interface.h"
+#include "interfaces/decent_uart.h"
+#include "interfaces/stdio_interface.h"
+#include "event_base.h"
 
 class Dispatcher {
 

@@ -1,10 +1,8 @@
-#include "events.h"
+#include "event_base.h"
 
 #include <event2/event.h>
 #include <glog/logging.h>
 
-
-EventBase::EventBase() {};
 
 void EventBase::Init() {
   DLOG(INFO) << "EventBase: Initializing";
@@ -22,7 +20,7 @@ void EventBase::Init() {
 /*
  * Eventlib logging callbacks -- set up to use glog
  */
-static void log_CB(int sev, const char* msg) {
+void EventBase::log_CB(int sev, const char* msg)  {
   switch (sev) {
   case _EVENT_LOG_DEBUG: DLOG(INFO) << "EventBase: " << msg; break;
   case _EVENT_LOG_WARN: LOG(WARNING) << "EventBase: " << msg; break;
@@ -32,7 +30,7 @@ static void log_CB(int sev, const char* msg) {
   }
 }
 
-static void fatal_CB(int err) {
+void EventBase::fatal_CB(int err) {
   LOG(FATAL) << "EventBase: Something went wrong. Fatal-ing with error: " << err;
 }
 

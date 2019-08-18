@@ -5,15 +5,12 @@
 
 class EventBase {
  public:
-  EventBase();
+  EventBase() {};
   void Init();
+  event_base *eb;
   
- private:
-  static void log_CB(int sev, const char* msg);
-  static void fatal_CB(int err);
-
-  static event_base *eb;
-
-}
+  __attribute__((unused)) static void log_CB(int sev, const char* msg);
+  __attribute__((unused)) static void fatal_CB(int err);
+};
 
 #endif

@@ -1,12 +1,13 @@
 #include "interfaces/stdio_interface.h"
 
 #include <termios.h>
+#include <iostream>
+#include <string>
 #include <glog/logging.h>
 #include <gflags/gflags.h>
 
 #include "dispatcher.h"
 
-//#include <iostream>
 //#include <event2/event.h>
 
 //#include "desire_util.h"
@@ -25,13 +26,14 @@
 // #include "dispatch.h"
 
 
-StdioInterface::Init() {
+void StdioInterface::Init(Dispatcher *dispatcher_ptr) {
   DLOG(INFO) << "StdioInterface: Connecting to stdin";
+  _dispatcher = dispatcher_ptr;
 }
 
 void StdioInterface::Send(const std::string message) {
   std::cout << message;
-};
+}
 
 const std::string StdioInterface::Recv() {
   if (!std::cin.good()) {
@@ -39,22 +41,22 @@ const std::string StdioInterface::Recv() {
     exit(0);
   }
 
-  const std::string message;
+  std::string message;
   std::cin >> message;
-  return message;
-};
+  const std::string cmessage = message;
+  return cmessage;
+}
 
-const std::string DecentUart::GetInterfaceName() {
+const std::string StdioInterface::GetInterfaceName() {
   const std::string name("stdin");
   return name;
 }
 
-void StdioInterface::ReadCB(int fd, short what, void *dispatcher_ptr) {
-  Dispatcher dispatcher = *(Dispatcher *)dispatcher_ptr;
-
+void StdioInterface::ReadCB() {
   const std::string in_string = Recv(); 
-  dispatcher.DispatchFromController(in_string, GetInterfaceName());
-};
+  CHECK_NOTNULL(_dispatcher);
+  _dispatcher->DispatchFromController(in_string, GetInterfaceName());
+}
 
 int StdioInterface::GetFileDescriptor() {
   return STDIN_FILENO;

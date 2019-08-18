@@ -1,5 +1,4 @@
 //#include <iostream>
-#include <event2/event.h>
 #include <glog/logging.h>
 #include <gflags/gflags.h>
 //#include <cassert>

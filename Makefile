@@ -7,8 +7,7 @@ APP_DIR  := $(BUILD)/apps
 TARGET   := desire
 INCLUDE  := -Iinclude/
 SRC      :=                      \
-   $(wildcard src/de_serial/*.cpp) \
-   $(wildcard src/stdio_serial/*.cpp) \
+   $(wildcard src/interfaces/*.cpp) \
    $(wildcard src/*.cpp)         \
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
