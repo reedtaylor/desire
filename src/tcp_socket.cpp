@@ -67,7 +67,7 @@ void TcpSocket::CallBack(int fd,
 
   TcpInterface *tcp_controller = new TcpInterface;
   tcp_controller->Init(((TcpSocket *)socket)->_dispatcher, new_sockfd);
-  ((TcpSocket *)socket)->_dispatcher->AddReadEventForInterface(tcp_controller);
+  ((TcpSocket *)socket)->_dispatcher->AddController(tcp_controller);
   
 }
 

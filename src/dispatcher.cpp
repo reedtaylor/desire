@@ -35,14 +35,14 @@ void Dispatcher::Init() {
 void Dispatcher::DispatchFromDE(const std::string message) {
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
     interface->Send(message);
-    VLOG(4) << "Dispatcher: Sent " << message << " to " << interface->GetInterfaceName();
+    VLOG(4) << "Dispatcher: >>>> Sent " << message << " to " << interface->GetInterfaceName();
   }
 }
 
 void Dispatcher::DispatchFromController(const std::string message,
 					const std::string interface_name) {
   _decent_uart->Send(message);
-  VLOG(4) << "Dispatcher: Sent " << message << " to " << _decent_uart->GetInterfaceName() << " from " << interface_name;
+  VLOG(3) << "Dispatcher: <<<< Sent " << message << " to " << _decent_uart->GetInterfaceName() << " from " << interface_name;
 }
 
 void Dispatcher::AddController(Interface *new_controller) {
@@ -106,7 +106,7 @@ void Dispatcher::AddReadEventForTcpSocket(TcpSocket *socket) {
 			       socket);
   event_add(new_event, NULL);
 
-  LOG(INFO) << "Dispatcher: Added read event for TCP Socket";
+  LOG(INFO) << "Dispatcher: Added read event for TCP Socket fd " << socket->GetFileDescriptor();
   
 }
 

@@ -13,7 +13,7 @@ void TcpInterface::Init(__attribute__((unused)) Dispatcher *dispatcher_ptr) {
 
 
 void TcpInterface::Init(Dispatcher *dispatcher_ptr, int file_descriptor) {
-  DLOG(INFO) << "TcpInterface: Connecting to " << FLAGS_decent_device_path;
+  DLOG(INFO) << "TcpInterface: Connecting to fd " << file_descriptor;
 
   _dispatcher = dispatcher_ptr;
   
@@ -31,13 +31,14 @@ void TcpInterface::Init(Dispatcher *dispatcher_ptr, int file_descriptor) {
 
 void TcpInterface::Send(const std::string message) {
   fputs(message.c_str(), _file_handle);
-  fputc('\n', _file_handle);
+  //  fputc('\n', _file_handle);
 }
 
 const std::string TcpInterface::Recv() {
   char in_string[_TCP_CHARBUF_SIZE];
   if (!fgets(in_string, _TCP_CHARBUF_SIZE, _file_handle)) {
-    LOG(FATAL) << "TcpInterface: interface died";
+    LOG(INFO) << "TcpInterface: interface died";
+    // todo: remove self rather than exiting
     exit(0);
   }
 
@@ -46,14 +47,14 @@ const std::string TcpInterface::Recv() {
 }
 
 const std::string TcpInterface::GetInterfaceName() {
-  const std::string name("TcpInterface");
+  const std::string name("TcpInterface fd " + std::to_string(GetFileDescriptor()));
   return name;
 }
 
 void TcpInterface::ReadCB() {
   const std::string in_string = Recv(); 
   CHECK_NOTNULL(_dispatcher);
-  _dispatcher->DispatchFromDE(in_string);
+  _dispatcher->DispatchFromController(in_string, GetInterfaceName());
 }
 
 int TcpInterface::GetFileDescriptor() {
