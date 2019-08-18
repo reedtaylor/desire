@@ -31,6 +31,7 @@ void TcpInterface::Init(Dispatcher *dispatcher_ptr, int file_descriptor) {
 
 void TcpInterface::Send(const std::string message) {
   fputs(message.c_str(), _file_handle);
+  fflush(_file_handle);
   //  fputc('\n', _file_handle);
 }
 

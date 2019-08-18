@@ -4,6 +4,7 @@
 #include <glog/logging.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 
 #include "dispatcher.h"
 #include "interfaces/tcp_interface.h"
@@ -26,9 +27,10 @@ void TcpSocket::Init(Dispatcher *dispatcher_ptr) {
   
   // 1. Create a TCP socket
   int opt = 1;
-  _socket_file_descriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  _socket_file_descriptor = socket(AF_INET, SOCK_STREAM, 0);
   setsockopt(_socket_file_descriptor, SOL_SOCKET, SO_REUSEADDR,
 	     (char *)&opt, sizeof(opt));
+
   // todo: assert that both of the above were successful
   LOG(INFO) << "TcpSocket: Sock fd = " << _socket_file_descriptor;
   
