@@ -17,9 +17,6 @@ void EventBase::Init() {
   //event_enable_debug_mode(); // verbose & compute intensive
 }
 
-/*
- * Eventlib logging callbacks -- set up to use glog
- */
 void EventBase::log_CB(int sev, const char* msg)  {
   switch (sev) {
   case _EVENT_LOG_DEBUG: DLOG(INFO) << "EventBase: " << msg; break;

@@ -1,14 +1,15 @@
-//#include <iostream>
 #include <glog/logging.h>
 #include <gflags/gflags.h>
-//#include <cassert>
 #include <signal.h>
 
-//#include "desire_util.h"
-//#include "events.h"
-//#include "de_serial/de_serial.h"
-//#include "stdio_serial/stdio_serial.h"
 #include "dispatcher.h"
+
+
+// SignalHandler -- for catching system signals via signal()
+// 
+// We want to close cleanly even if the user ctrl-C's on the command
+// line (specifically giving glog a chance to flush the logs
+// but could also do some interface cleanup here later on).
 
 void SignalHandler(int s){
   LOG(INFO) << "Caught signal " << s << " -- flushing and exiting";
@@ -23,10 +24,14 @@ int main(int argc, char* argv[]) {
   // Catch SIGINT so we can flush the logs
   signal (SIGINT,SignalHandler);
   
-  // Initialize dispatcher
+  // Initialize dispatcher -- the bulk of the work of setting up desire
+  // is done in this Init() function call
   Dispatcher *dispatcher = new Dispatcher();
   dispatcher->Init();
 
-  // launch the event handler loop
+  // Launch the event handler loop -- this call never returns
+  // Note that we could even consider moving this into the Dispatcher::Init()
+  // call but it seemed more intutitve to have the "busy loop" so to speak
+  // be present at the bottom of main()
   dispatcher->RunDispatchLoop();
 }

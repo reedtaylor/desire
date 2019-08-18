@@ -13,10 +13,8 @@
 //#include "dispatch.h"
 
 
-/*
- * Define command line flags (via gflags)
- * These can be referenced using FLAGS_[name]
- */
+// Define command line flags (via gflags)
+// These can be referenced using FLAGS_[name]
 DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where the Decent machine is connected");
 
 void DecentUart::Init(Dispatcher *dispatcher_ptr) {
@@ -28,6 +26,7 @@ void DecentUart::Init(Dispatcher *dispatcher_ptr) {
   int file_descriptor = fileno(_file_handle);
 
   if (file_descriptor < 0) {
+    // todo: verify this is a valid way to assess a good file open
     LOG(FATAL) << "DecentUart: Could not open "
 	       << FLAGS_decent_device_path
 	       << " -- Error: " << strerror(errno);
