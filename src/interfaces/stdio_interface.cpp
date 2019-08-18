@@ -8,24 +8,6 @@
 
 #include "dispatcher.h"
 
-//#include <event2/event.h>
-
-//#include "desire_util.h"
-//#include "dispatch.h"
-
-// #include "stdio_serial/stdio_serial.h"
-
-// #include <iostream>
-// #include <termios.h>
-// #include <event2/event.h>
-// #include <glog/logging.h>
-// #include <gflags/gflags.h>
-
-// #include "desire_util.h"
-// #include "flags.h"
-// #include "dispatch.h"
-
-
 void StdioInterface::Init(Dispatcher *dispatcher_ptr) {
   DLOG(INFO) << "StdioInterface: Connecting to stdin";
   _dispatcher = dispatcher_ptr;

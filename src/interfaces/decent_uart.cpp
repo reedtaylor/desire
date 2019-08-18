@@ -6,13 +6,6 @@
 
 #include "dispatcher.h"
 
-//#include <iostream>
-//#include <event2/event.h>
-
-//#include "desire_util.h"
-//#include "dispatch.h"
-
-
 // Define command line flags (via gflags)
 // These can be referenced using FLAGS_[name]
 DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where the Decent machine is connected");

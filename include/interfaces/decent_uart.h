@@ -49,9 +49,9 @@ public:
   // return the file descriptor for the UART serial device
   int GetFileDescriptor() override;
   
-private:
-
-  // this is a place to hang on
+protected:
+  // this is a place to hang onto the file stream
+  // for use by Recv() and Send()
   FILE *_file_handle;
 
 };
