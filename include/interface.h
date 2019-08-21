@@ -2,6 +2,7 @@
 #define _INTERFACE_H
 
 #include <glog/logging.h>
+#include <event2/event.h>
 
 // Interface is the base class for all our interfaces that receive and
 // transmit decent-style data frames, and that are attached to the
@@ -28,7 +29,8 @@ class Dispatcher; // forward declaration
 class Interface {
 
  public:
-
+  virtual ~Interface() = default;
+  
   // Initialize the interface, performing any needed setup
   // Remember: it is vital for all nonabstract Interface inheritor classes
   // to set the _dispatcher pointer (from this base class) to refer to
@@ -87,6 +89,12 @@ class Interface {
   // event_base.  Required in order for read callbacks (above) to
   // be able to pass the received messages to the DE
   Dispatcher *_dispatcher;
+
+  // a pointer to the event_base event for this interface,
+  // used in case of needing to deallocate the event (e.g.
+  // if the interface closes
+  struct event *_event;
+  
 };
 
 
