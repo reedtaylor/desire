@@ -1,6 +1,8 @@
 #include "dispatcher.h"
 
 #include <glog/logging.h>
+#include <iterator>
+#include <algorithm>
 
 #include "interface.h"
 #include "tcp_socket.h"
@@ -61,6 +63,31 @@ void Dispatcher::AddController(Interface *new_controller) {
   LOG(INFO) << "Dispatcher: Added new controller " << new_controller->GetInterfaceName();
 }
 
+void Dispatcher::RemoveAndFreeController(Interface *old_controller) {
+
+  std::vector<Interface *>::iterator to_erase =
+    std::find(_controllers.begin(), _controllers.end(), old_controller);
+
+  // And then erase if found
+  if (to_erase != _controllers.end()){
+    _controllers.erase(to_erase);
+  } else {
+    LOG(WARNING) << "Failed to remove controller from vector: " << old_controller;
+  }
+
+  // remove the EventBase listener for the new controller
+  RemoveReadEventForInterface(old_controller);
+
+  // controllers are created in the dispatcher; the dispatcher taketh away
+  // todo: put more thought into memory management, this delete segfaults
+  // for obvious reasons right now so I am just allowing memory leak
+  // for now
+  std::string dead_name = old_controller->GetInterfaceName();
+  //delete old_controller;
+  LOG(INFO) << "Dispatcher: Removed controller " << dead_name;
+}
+
+
 void Dispatcher::AddReadEventForInterface(Interface *interface) {
   CHECK_NOTNULL(_event_base);
   CHECK_NOTNULL(_event_base->eb);
@@ -90,8 +117,14 @@ void Dispatcher::AddReadEventForInterface(Interface *interface) {
 			       Interface::CallBack,
 			       interface);
   event_add(new_event, NULL);
+  interface->_event = new_event;
 
   LOG(INFO) << "Dispatcher: Added read event for controller " << interface->GetInterfaceName();
+}
+
+void Dispatcher::RemoveReadEventForInterface(Interface *interface) {
+  event_free(interface->_event);
+  LOG(INFO) << "Dispatcher: Removed read event for TCP Socket fd " << interface->GetFileDescriptor();
 }
 
 
@@ -109,6 +142,8 @@ void Dispatcher::AddReadEventForTcpSocket(TcpSocket *socket) {
   LOG(INFO) << "Dispatcher: Added read event for TCP Socket fd " << socket->GetFileDescriptor();
   
 }
+
+
 
 
 void Dispatcher::RunDispatchLoop() {

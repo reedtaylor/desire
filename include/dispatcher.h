@@ -50,6 +50,10 @@ class Dispatcher {
   // to add controllers to the dispatcher, and we'll allow for that for now
   void AddController(Interface *new_controller);
 
+  // Remove a controller interface from all vectors,
+  // delete it from event_base, and free it
+  void RemoveAndFreeController(Interface *old_controler);
+  
   // Wrapper function around the eventLib event_new() call that
   // places an individual read event on the event_base
   //
@@ -58,6 +62,11 @@ class Dispatcher {
   // sense to be implemented here
   void AddReadEventForInterface(Interface *interface);
 
+  // Corresponding remove call, note this does not
+  // deallocate any memory
+  void RemoveReadEventForInterface(Interface *interface);
+
+  
   // Wrapper function around the eventLib event_new() call that
   // places an individual read event on the event_base (for a tcp socket
   // rather than a controller)
@@ -67,6 +76,7 @@ class Dispatcher {
   // sense to be implemented here
   void AddReadEventForTcpSocket(TcpSocket *socket);
 
+  
   // Wrapper function around the event_base_dispatch call.  This has the
   // effect of kicking off the "busy loop" at the heart of the system
   // listening for events, and never returns (<-- oversimplified but basically

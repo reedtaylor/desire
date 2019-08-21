@@ -38,9 +38,9 @@ void TcpInterface::Send(const std::string message) {
 const std::string TcpInterface::Recv() {
   char in_string[_TCP_CHARBUF_SIZE];
   if (!fgets(in_string, _TCP_CHARBUF_SIZE, _file_handle)) {
-    LOG(INFO) << "TcpInterface: interface died";
-    // todo: remove self rather than exiting
-    exit(0);
+    LOG(INFO) << "TcpInterface: interface died: " << GetInterfaceName();
+    fclose(_file_handle);
+    _dispatcher->RemoveAndFreeController(this);
   }
 
   const std::string message(in_string);
@@ -53,9 +53,11 @@ const std::string TcpInterface::GetInterfaceName() {
 }
 
 void TcpInterface::ReadCB() {
-  const std::string in_string = Recv(); 
   CHECK_NOTNULL(_dispatcher);
-  _dispatcher->DispatchFromController(in_string, GetInterfaceName());
+  const std::string in_string = Recv();
+  if (in_string.length() > 0) { // ensure Recv didn't fail
+    _dispatcher->DispatchFromController(in_string, GetInterfaceName());
+  }
 }
 
 int TcpInterface::GetFileDescriptor() {

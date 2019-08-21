@@ -19,6 +19,7 @@ class TcpInterface : public Interface {
   
 public:
   TcpInterface() {};
+  ~TcpInterface() {};
 
   // Initialize the TCP interface and attach the _dispatcher pointer
   // also stash a pointer to the filehandle in _file_handle
