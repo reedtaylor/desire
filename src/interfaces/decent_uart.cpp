@@ -5,6 +5,7 @@
 #include <gflags/gflags.h>
 
 #include "dispatcher.h"
+#include "string_util.h"
 
 // Define command line flags (via gflags)
 // These can be referenced using FLAGS_[name]
@@ -43,8 +44,10 @@ void DecentUart::Init(Dispatcher *dispatcher_ptr) {
 }
 
 void DecentUart::Send(const std::string message) {
-  fputs(message.c_str(), _file_handle);
+  std::string strip_message = trim(message);
+  fputs(strip_message.c_str(), _file_handle);
   fputc('\n', _file_handle);
+  fflush(_file_handle);
 }
 
 const std::string DecentUart::Recv() {
