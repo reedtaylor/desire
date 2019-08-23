@@ -9,6 +9,8 @@ __DESIRE aims to provide a more flexible platform for connectivity.__  For examp
 
 __DESIRE is happy to have roommates on the Raspberry Pi__   A Raspberry Pi is a pretty heavyweight machine for the kind of task DESIRE is performing, so if you need an execution environment for your system that happens to be local to the machine itelf -- go for it!  Multiple applications can run on the same Raspberry Pi as Desire and each can individually to talk to the machine without conflict and without requiring a remote connection of any form.
 
+![DESIRE Architecture](https://user-images.githubusercontent.com/8826853/63563650-c6be3600-c52f-11e9-9aea-24b9ecf63a17.png)
+
 DESIRE is not aiming to provide a high-level API for the Decent machine.  The hope is that higher-level APIs such as RESTful interfaces etc. will be implemented in application layers constructed atop DESIRE.
 
 DESIRE won't define many (if any) new APIs or interfaces at all, relative to what is native to the stock DE machine.  The main extensions likely offered by the project are things like porting Ray Heasman's existing "DE serial protocol over UART" and "DE serial protocol over BLE" to some new interfaces, like (for example) "DE serial protocol over TCP" (done) and "DE serial protocol over USB" (coming).  These protocol-ports will aspire to be as-close-to-identical-as-possible to the native protocols of the DE.
