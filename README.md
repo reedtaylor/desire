@@ -10,6 +10,7 @@ __DESIRE aims to provide a more flexible platform for connectivity.__  For examp
 __DESIRE is happy to have roommates on the Raspberry Pi__   A Raspberry Pi is a pretty heavyweight machine for the kind of task DESIRE is performing, so if you need an execution environment for your system that happens to be local to the machine itelf -- go for it!  Multiple applications can run on the same Raspberry Pi as Desire and each can individually to talk to the machine without conflict and without requiring a remote connection of any form.
 
 ![DESIRE Architecture](https://user-images.githubusercontent.com/8826853/63563763-3d5b3380-c530-11e9-8516-5a0bcb1ca89b.png)
+[update -- the above is no longer precisely accurate in terms of which BT adaptor is doing what; will update]
 
 DESIRE is not aiming to provide a high-level API for the Decent machine.  The hope is that higher-level APIs such as RESTful interfaces etc. will be implemented in application layers constructed atop DESIRE.
 
