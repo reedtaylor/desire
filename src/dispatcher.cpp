@@ -7,15 +7,22 @@
 #include "interface.h"
 #include "tcp_socket.h"
 
+
+// Define command line flags (via gflags)
+// These can be referenced using FLAGS_[name]
+DEFINE_string(decent_device_path, "/dev/ttySC0", "Path to serial device where the Decent machine is connected");
+
+
+
 void Dispatcher::Init() {
   LOG(INFO) << "Dispatcher: Initializing";
 
   _event_base = new EventBase();
   _event_base->Init();
 
-  _decent_uart = new DecentUart();
-  _decent_uart->Init(this);
-  AddReadEventForInterface(_decent_uart); // todo: assert this worked
+  _decent_uart = new UartInterface();
+  _decent_uart->Init(this, FLAGS_decent_device_path.c_str(), std::string(DE1_MACHINE_NAME));
+  AddReadEventForInterface(_decent_uart); // todo: verify this worked
 
   // For now we are adding stdio controller here inside Dispatcher::Init()
   // may want to move out into main later on? not sure yet where

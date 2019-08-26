@@ -5,11 +5,19 @@
 #include <vector>
 
 #include "interface.h"
-#include "interfaces/decent_uart.h"
+#include "interfaces/uart_interface.h"
 #include "interfaces/stdio_interface.h"
 #include "tcp_socket.h"
 #include "interfaces/tcp_interface.h"
 #include "event_base.h"
+
+// Command line flag: -decent_device_path=[string]
+// Allows a user to override the path to the Decent UART device.
+// Default = /dev/serial0
+// (Per best practice see .cpp file for the DEFINE_ call)
+DECLARE_string(decent_device_path);
+#define DE1_MACHINE_NAME "DE1"
+
 
 // Dispatcher -- this class is the heart of the desire system functioning
 //  - Responsible for setting up the eventLib event_base
@@ -104,7 +112,7 @@ class Dispatcher {
   // We keep the interface for the DE itself in this special place (i.e.
   // even though it inherits from Interface it is NOT supposed to be
   // on the _controllers vector.  Instead it is here.
-  DecentUart *_decent_uart;
+  UartInterface *_decent_uart;
 
   // Event lib wrapper class instance
   EventBase *_event_base;
