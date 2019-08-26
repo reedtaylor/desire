@@ -16,6 +16,7 @@ DEFINE_string(de1_device_path, "/dev/ttySC0", "Path to serial device where the D
 DEFINE_string(decent_ble_device_path, "/dev/ttySC1", "Path to serial device where the Decent BLE adaptor is connected");
 DEFINE_bool(use_decent_ble, true, "Enable a to serial device for the Decent BLE adaptor");
 
+DEFINE_bool(use_stdio_controller, false, "Enable stdio control for the Decent BLE adaptor");
 
 void Dispatcher::Init() {
   LOG(INFO) << "Dispatcher: Initializing";
@@ -45,10 +46,12 @@ void Dispatcher::Init() {
   // seems better to keep it in here for now since I think new TCP
   // connections will be getting added inside this class, hence this will
   // be the one place we are calling AddController() from.
-  StdioInterface *stdio_interface = new StdioInterface();
-  stdio_interface->Init(this);
-  AddController(stdio_interface);
-
+  if (FLAGS_use_stdio_controller) {
+    StdioInterface *stdio_interface = new StdioInterface();
+    stdio_interface->Init(this);
+    AddController(stdio_interface);
+  }
+  
   TcpSocket *tcp_socket = new TcpSocket();
   tcp_socket->Init(this);
   AddReadEventForTcpSocket(tcp_socket);

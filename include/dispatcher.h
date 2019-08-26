@@ -14,18 +14,23 @@
 
 
 // Command line flag: -de1_device_path=[string]
-// Allows a user to override the path to the Decent UART device.
-// Default = /dev/serial0
+//   Allows a user to override the path to the Decent UART device.
 DECLARE_string(de1_device_path);
 #define DE1_MACHINE_NAME "DE1"
 
 // Command line flags:
 // -decent_ble_device_path=[string]
-// 
-// Allows a user to override the path to the Decent UART device.
-// Default = /dev/serial0
+//   Allows a user to override the path to the Decent BLE UART device.
+// -use_decent_ble=true
+//   Enable / disable Decent's BLE adaptor over UART
 DECLARE_string(decent_ble_device_path);
 DECLARE_bool(use_decent_ble);
+#define DECENT_BLE_NAME "BLE"
+
+// Command line flags:
+// -use_decent_ble=true
+//   Enable / disable control via stdio
+DECLARE_bool(use_stdio_controller);
 #define DECENT_BLE_NAME "BLE"
 
 
