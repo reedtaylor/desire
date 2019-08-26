@@ -6,6 +6,7 @@
 
 #include "interface.h"
 #include "tcp_socket.h"
+#include "string_util.h"
 
 
 // Define command line flags (via gflags)
@@ -44,14 +45,14 @@ void Dispatcher::Init() {
 void Dispatcher::DispatchFromDE(const std::string message) {
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
     interface->Send(message);
-    VLOG(4) << "Dispatcher: >>>> Sent " << message << " to " << interface->GetInterfaceName();
+    VLOG(4) << "Dispatcher:  >>> Sent " << trim(message) << " to " << interface->GetInterfaceName();
   }
 }
 
 void Dispatcher::DispatchFromController(const std::string message,
 					const std::string interface_name) {
   _decent_uart->Send(message);
-  VLOG(3) << "Dispatcher: <<<< Sent " << message << " to " << _decent_uart->GetInterfaceName() << " from " << interface_name;
+  VLOG(3) << "Dispatcher: <<<  Sent " << trim(message) << " to " << _decent_uart->GetInterfaceName() << " from " << interface_name;
 }
 
 void Dispatcher::AddController(Interface *new_controller) {
@@ -122,7 +123,7 @@ void Dispatcher::AddReadEventForInterface(Interface *interface) {
   event_add(new_event, NULL);
   interface->_event = new_event;
 
-  LOG(INFO) << "Dispatcher: Added read event for controller " << interface->GetInterfaceName();
+  LOG(INFO) << "Dispatcher: Added read event for interface " << interface->GetInterfaceName();
 }
 
 void Dispatcher::RemoveReadEventForInterface(Interface *interface) {

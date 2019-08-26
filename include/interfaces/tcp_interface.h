@@ -24,14 +24,9 @@ public:
   // Initialize the TCP interface and attach the _dispatcher pointer
   // also stash a pointer to the filehandle in _file_handle
   // for use by Recv() and Send().
-  //
-  // The first (override) version is never called and just throws an
-  // error.  But we are required to implement it due to inheriting 
-  // from virtual base class Interface.  The alternative would be to force
-  // the creator to poke a file_descriptor in before calling Init()
-  // which feels like it violates the spirit of an Init() call
-  void Init(__attribute__((unused)) Dispatcher *dispatcher_ptr) override;
+  // do not call Init(Dispatcher *) directly; we need the fd
   void Init(Dispatcher *dispatcher_ptr, int file_descriptor);
+  void Init(Dispatcher *dispatcher_ptr) override;
 
   // Push a string out onto the TCP device
   void Send(const std::string message) override;
