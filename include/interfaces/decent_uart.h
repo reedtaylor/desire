@@ -3,8 +3,11 @@
 
 #include <gflags/gflags.h>
 
-class Dispatcher; // forward reference
+class DecentUart; // forward reference to avoid cyclic dependency
+#include "dispatcher.h"
 #include "interface.h"
+
+#define DE1_MACHINE_NAME "DE1"
 
 // For reasons we read into a fixed size char[] array.  This is that size.
 #define _UART_CHARBUF_SIZE 1024
@@ -41,10 +44,6 @@ public:
 
   // Return "DecentUART" as a human readable name for this interface
   const std::string GetInterfaceName() override;
-
-  // take a string from the callback annd pass it to the dispatcher
-  // todo: this is dumb and should go away into the base class callback
-  void ReadCB() override;
 
   // return the file descriptor for the UART serial device
   int GetFileDescriptor() override;

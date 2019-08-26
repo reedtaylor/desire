@@ -34,12 +34,6 @@ const std::string StdioInterface::GetInterfaceName() {
   return name;
 }
 
-void StdioInterface::ReadCB() {
-  const std::string in_string = Recv(); 
-  CHECK_NOTNULL(_dispatcher);
-  _dispatcher->DispatchFromController(in_string, GetInterfaceName());
-}
-
 int StdioInterface::GetFileDescriptor() {
   return STDIN_FILENO;
 }

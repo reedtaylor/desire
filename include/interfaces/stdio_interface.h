@@ -3,7 +3,7 @@
 
 #include <gflags/gflags.h>
 
-class Dispatcher; // forward reference
+#include "dispatcher.h"
 #include "interface.h"
 
 // StdioInterface is a class that derives Interface and specifies it for the
@@ -27,20 +27,16 @@ class StdioInterface : public Interface {
   void Init(Dispatcher *dispathcher_ptr) override;
   
   
-  // Push a string out onto the UART serial device
+  // Push a string to stdout
   void Send(const std::string message) override;
   
-  // Get a string from the UART serial device
+  // Get a string from stdin
   const std::string Recv() override;
   
-  // Return "DecentUART" as a human readable name for this interface
+  // Return "stdio" as a human readable interface name
   const std::string GetInterfaceName() override;
   
-  // take a string from the callback annd pass it to the dispatcher
-  // todo: this is dumb and should go away into the base class callback (issue #16)
-  void ReadCB() override;
-
-  // return the file descriptor for the UART serial device
+  // return the file descriptor
   int GetFileDescriptor() override;
 };
 
