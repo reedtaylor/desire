@@ -9,7 +9,7 @@
 
 // Define command line flags (via gflags)
 // These can be referenced using FLAGS_[name]
-DEFINE_string(decent_device_path, "/dev/serial0", "Path to serial device where the Decent machine is connected");
+DEFINE_string(decent_device_path, "/dev/ttySC0", "Path to serial device where the Decent machine is connected");
 
 void DecentUart::Init(Dispatcher *dispatcher_ptr) {
   DLOG(INFO) << "DecentUart: Connecting to " << FLAGS_decent_device_path;
@@ -62,18 +62,10 @@ const std::string DecentUart::Recv() {
 }
 
 const std::string DecentUart::GetInterfaceName() {
-  const std::string name("DecentUART");
+  const std::string name(DE1_MACHINE_NAME);
   return name;
-}
-
-void DecentUart::ReadCB() {
-  const std::string in_string = Recv(); 
-  CHECK_NOTNULL(_dispatcher);
-  _dispatcher->DispatchFromDE(in_string);
 }
 
 int DecentUart::GetFileDescriptor() {
   return fileno(_file_handle);
 }
-
-

@@ -3,7 +3,7 @@
 
 #include <gflags/gflags.h>
 
-class Dispatcher; // forward reference
+#include "dispatcher.h"
 #include "interface.h"
 
 // For reasons we read into a fixed size char[] array.  This is that size.
@@ -41,10 +41,6 @@ public:
 
   // Return "TcpInterface" as a human readable name for this interface
   const std::string GetInterfaceName() override;
-
-  // take a string from the callback annd pass it to the dispatcher
-  // todo: this is dumb and should go away into the base class callback
-  void ReadCB() override;
 
   // return the file descriptor for the XXX serial device
   int GetFileDescriptor() override;

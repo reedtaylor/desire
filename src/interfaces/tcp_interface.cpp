@@ -15,6 +15,7 @@ void TcpInterface::Init(__attribute__((unused)) Dispatcher *dispatcher_ptr) {
 void TcpInterface::Init(Dispatcher *dispatcher_ptr, int file_descriptor) {
   DLOG(INFO) << "TcpInterface: Connecting to fd " << file_descriptor;
 
+  // todo: move this into the base Init override and assert that _file_handle is not null there
   _dispatcher = dispatcher_ptr;
   
   _file_handle = fdopen(file_descriptor, "r+");
@@ -50,14 +51,6 @@ const std::string TcpInterface::Recv() {
 const std::string TcpInterface::GetInterfaceName() {
   const std::string name("TcpInterface fd " + std::to_string(GetFileDescriptor()));
   return name;
-}
-
-void TcpInterface::ReadCB() {
-  CHECK_NOTNULL(_dispatcher);
-  const std::string in_string = Recv();
-  if (in_string.length() > 0) { // ensure Recv didn't fail
-    _dispatcher->DispatchFromController(in_string, GetInterfaceName());
-  }
 }
 
 int TcpInterface::GetFileDescriptor() {

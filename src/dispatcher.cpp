@@ -59,7 +59,6 @@ void Dispatcher::AddController(Interface *new_controller) {
   AddReadEventForInterface(new_controller);
 
   // todo: checks/assertions that the above were each successful
-  
   LOG(INFO) << "Dispatcher: Added new controller " << new_controller->GetInterfaceName();
 }
 
@@ -79,11 +78,8 @@ void Dispatcher::RemoveAndFreeController(Interface *old_controller) {
   RemoveReadEventForInterface(old_controller);
 
   // controllers are created in the dispatcher; the dispatcher taketh away
-  // todo: put more thought into memory management, this delete segfaults
-  // for obvious reasons right now so I am just allowing memory leak
-  // for now
   std::string dead_name = old_controller->GetInterfaceName();
-  //delete old_controller;
+  delete old_controller;
   LOG(INFO) << "Dispatcher: Removed controller " << dead_name;
 }
 
@@ -114,7 +110,7 @@ void Dispatcher::AddReadEventForInterface(Interface *interface) {
   event* new_event = event_new(_event_base->eb, 
 			       interface->GetFileDescriptor(),
 			       EV_READ | EV_PERSIST,
-			       Interface::CallBack,
+			       Dispatcher::CallBack,
 			       interface);
   event_add(new_event, NULL);
   interface->_event = new_event;
@@ -143,10 +139,19 @@ void Dispatcher::AddReadEventForTcpSocket(TcpSocket *socket) {
   
 }
 
-
-
-
 void Dispatcher::RunDispatchLoop() {
   event_base_dispatch(_event_base->eb);
+}
+
+void Dispatcher::CallBack(__attribute__((unused)) int fd,
+	      __attribute__((unused)) short what,
+	      void* interface_ptr) {
+  Interface *interface = (Interface *)interface_ptr;
+  const std::string in_string = interface->Recv(); 
+  if (interface->GetInterfaceName() == DE1_MACHINE_NAME) {
+    interface->_dispatcher->DispatchFromDE(in_string);
+  } else {
+    interface->_dispatcher->DispatchFromController(in_string, interface->GetInterfaceName());
+  }      
 }
 

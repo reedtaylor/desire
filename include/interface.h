@@ -52,49 +52,13 @@ class Interface {
   // libevent which is written in C and works on fd's)
   virtual int GetFileDescriptor() = 0;
 
-  // virtual callback function for the interface. When an interface
-  // gets this function call, what will typically need to happen is:
-  // 1. The interface calls Recv() on itself obtaining a message
-  // 2. The interface passes that message to _dispatcher->DispatchFromController
-  //    so that the dispatcher can pass the message along to the DE
-  //
-  // like this:
-  //  void MyInterface::ReadCB() {
-  //    const std::string in_string = Recv(); 
-  //    CHECK_NOTNULL(_dispatcher);
-  //    _dispatcher->DispatchFromDE(in_string);
-  //  }
-  //
-  // todo: this is stupid and I should just inline the above into the
-  // static callback and make the virtual call to Recv() since it's the
-  // only actually polymorphic thing here.  then there would be no need
-  // for the virtual callback function at all
-  virtual void ReadCB() = 0;
-
-  // This static utility function is used to wrap the virtual callback
-  // implemented above.  Cannot / should not be overridden.
-  // The three weird fields are just what is specified by libevent,
-  // the third one being the most interesting since it ends up being
-  // a pointer to the actial object that is firing the read callback.
-  // (See Dispatcher::AddReadEventForInterface for where this gets
-  // set up.)
-  // todo: rewrite this commentif we move the addreadevent call around
-  static void CallBack(__attribute__((unused)) int fd,
-		       __attribute__((unused)) short what,
-		       __attribute__((unused)) void* interface) {
-    ((Interface *)interface)->ReadCB();
-  };
-
   // a pointer to the dispatcher that added this interface to the
-  // event_base.  Required in order for read callbacks (above) to
-  // be able to pass the received messages to the DE
-  Dispatcher *_dispatcher;
+  // event_base.  Uses during read callbacks (see Dispatcher::CallBack())
+  Dispatcher *_dispatcher = NULL;
 
-  // a pointer to the event_base event for this interface,
-  // used in case of needing to deallocate the event (e.g.
-  // if the interface closes
-  struct event *_event;
-  
+  // a pointer to the libevent event_base event for this specific interface
+  // used during cleanup to free the event
+  event *_event;
 };
 
 

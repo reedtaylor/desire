@@ -87,6 +87,10 @@ class Dispatcher {
   // this from main() and given that, this is the right place
   void RunDispatchLoop();
 
+  static void CallBack(__attribute__((unused)) int fd,
+		       __attribute__((unused)) short what,
+		       void* interface);
+ 
  private:
 
   // For now we keep all controller interfaces on this one vector
