@@ -11,12 +11,22 @@
 #include "interfaces/tcp_interface.h"
 #include "event_base.h"
 
-// Command line flag: -decent_device_path=[string]
+
+
+// Command line flag: -de1_device_path=[string]
 // Allows a user to override the path to the Decent UART device.
 // Default = /dev/serial0
-// (Per best practice see .cpp file for the DEFINE_ call)
-DECLARE_string(decent_device_path);
+DECLARE_string(de1_device_path);
 #define DE1_MACHINE_NAME "DE1"
+
+// Command line flags:
+// -decent_ble_device_path=[string]
+// 
+// Allows a user to override the path to the Decent UART device.
+// Default = /dev/serial0
+DECLARE_string(decent_ble_device_path);
+DECLARE_bool(use_decent_ble);
+#define DECENT_BLE_NAME "BLE"
 
 
 // Dispatcher -- this class is the heart of the desire system functioning
@@ -112,7 +122,7 @@ class Dispatcher {
   // We keep the interface for the DE itself in this special place (i.e.
   // even though it inherits from Interface it is NOT supposed to be
   // on the _controllers vector.  Instead it is here.
-  UartInterface *_decent_uart;
+  UartInterface *_de1_uart;
 
   // Event lib wrapper class instance
   EventBase *_event_base;
