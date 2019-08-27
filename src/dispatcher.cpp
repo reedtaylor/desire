@@ -60,7 +60,12 @@ void Dispatcher::Init() {
 
 void Dispatcher::DispatchFromDE(const std::string message) {
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
-    interface->Send(message);
+    int sent = interface->Send(message);
+    if (sent < 0) {
+      LOG(INFO) << "Dispatcher: Send to " << interface->GetInterfaceName() << " failed; freeing.";
+      RemoveAndFreeController(interface);
+      return;
+    }
     VLOG(4) << "Dispatcher:  >>> Sent " << trim(message) << " to " << interface->GetInterfaceName();
   }
 }

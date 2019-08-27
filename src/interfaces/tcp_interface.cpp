@@ -48,7 +48,7 @@ const std::string TcpInterface::Recv() {
   fgets(in_string, _TCP_CHARBUF_SIZE, _file_handle);
   if (feof(_file_handle) || ferror(_file_handle)) {
     if (strlen(in_string) > 0) {
-      LOG(WARNING) << "TcpInterface: Controller TCP " << GetInterfaceName()
+      LOG(WARNING) << "TcpInterface: Controller " << GetInterfaceName()
 		<< " read failed; input buffer '" << in_string
 		<< "' not newline-terminated. Dropping message.";
     }
@@ -60,7 +60,7 @@ const std::string TcpInterface::Recv() {
 }
 
 const std::string TcpInterface::GetInterfaceName() {
-  const std::string name("TcpInterface fd " + std::to_string(GetFileDescriptor()));
+  const std::string name("TCP:" + std::to_string(GetFileDescriptor()));
   return name;
 }
 

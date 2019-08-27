@@ -24,13 +24,18 @@ int StdioInterface::Send(const std::string message) {
 }
 
 const std::string StdioInterface::Recv() {
-  if (!std::cin.good()) {
-    LOG(INFO) << "StdioInterface: stdin closed; exiting";
-    exit(0);
-  }
-
   std::string message;
   std::cin >> message;
+
+  // If stdin closes, we get an empty string, which allows desire
+  // to keep running.  That seems better.  But could flag-protect
+  // or just uncomment this if what we want is for desire to keep running
+  //
+  // if (!std::cin.good()) {
+  //   LOG(INFO) << "StdioInterface: stdin closed; exiting";
+  //   exit(0);
+  // }
+
   const std::string cmessage = message;
   return cmessage;
 }
