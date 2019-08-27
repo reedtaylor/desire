@@ -6,17 +6,39 @@
 
 #include "interface.h"
 #include "tcp_socket.h"
+#include "string_util.h"
+
+
+// Define command line flags (via gflags)
+// These can be referenced using FLAGS_[name]
+DEFINE_string(de1_device_path, "/dev/ttySC0", "Path to serial device where the Decent machine is connected");
+
+DEFINE_string(decent_ble_device_path, "/dev/ttySC1", "Path to serial device where the Decent BLE adaptor is connected");
+DEFINE_bool(use_decent_ble, true, "Enable a to serial device for the Decent BLE adaptor");
+
+DEFINE_bool(use_stdio_controller, false, "Enable stdio control for the Decent BLE adaptor");
 
 void Dispatcher::Init() {
   LOG(INFO) << "Dispatcher: Initializing";
 
+  // Set up the event_base
   _event_base = new EventBase();
   _event_base->Init();
 
-  _decent_uart = new DecentUart();
-  _decent_uart->Init(this);
-  AddReadEventForInterface(_decent_uart); // todo: assert this worked
+  // Add the special interface for the DE (note, adds a read event directly
+  // rather than calling AddController since this is not a controller)
+  _de1_uart = new UartInterface();
+  _de1_uart->Init(this, FLAGS_de1_device_path.c_str(), std::string(DE1_MACHINE_NAME));
+  AddReadEventForInterface(_de1_uart); // todo: verify this worked
 
+  // Add the Decent BLE adaptor via UART
+  if (FLAGS_use_decent_ble) {
+    UartInterface *ble_uart = new UartInterface();
+    ble_uart->Init(this, FLAGS_decent_ble_device_path.c_str(), std::string(DECENT_BLE_NAME));
+    AddController(ble_uart);
+  }
+
+  
   // For now we are adding stdio controller here inside Dispatcher::Init()
   // may want to move out into main later on? not sure yet where
   // we should be generating most of the interfaces, which will be
@@ -24,10 +46,12 @@ void Dispatcher::Init() {
   // seems better to keep it in here for now since I think new TCP
   // connections will be getting added inside this class, hence this will
   // be the one place we are calling AddController() from.
-  StdioInterface *stdio_interface = new StdioInterface();
-  stdio_interface->Init(this);
-  AddController(stdio_interface);
-
+  if (FLAGS_use_stdio_controller) {
+    StdioInterface *stdio_interface = new StdioInterface();
+    stdio_interface->Init(this);
+    AddController(stdio_interface);
+  }
+  
   TcpSocket *tcp_socket = new TcpSocket();
   tcp_socket->Init(this);
   AddReadEventForTcpSocket(tcp_socket);
@@ -37,14 +61,14 @@ void Dispatcher::Init() {
 void Dispatcher::DispatchFromDE(const std::string message) {
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
     interface->Send(message);
-    VLOG(4) << "Dispatcher: >>>> Sent " << message << " to " << interface->GetInterfaceName();
+    VLOG(4) << "Dispatcher:  >>> Sent " << trim(message) << " to " << interface->GetInterfaceName();
   }
 }
 
 void Dispatcher::DispatchFromController(const std::string message,
 					const std::string interface_name) {
-  _decent_uart->Send(message);
-  VLOG(3) << "Dispatcher: <<<< Sent " << message << " to " << _decent_uart->GetInterfaceName() << " from " << interface_name;
+  _de1_uart->Send(message);
+  VLOG(3) << "Dispatcher: <<<  Sent " << trim(message) << " to " << _de1_uart->GetInterfaceName() << " from " << interface_name;
 }
 
 void Dispatcher::AddController(Interface *new_controller) {
@@ -115,7 +139,7 @@ void Dispatcher::AddReadEventForInterface(Interface *interface) {
   event_add(new_event, NULL);
   interface->_event = new_event;
 
-  LOG(INFO) << "Dispatcher: Added read event for controller " << interface->GetInterfaceName();
+  LOG(INFO) << "Dispatcher: Added read event for interface " << interface->GetInterfaceName();
 }
 
 void Dispatcher::RemoveReadEventForInterface(Interface *interface) {
@@ -152,6 +176,6 @@ void Dispatcher::CallBack(__attribute__((unused)) int fd,
     interface->_dispatcher->DispatchFromDE(in_string);
   } else {
     interface->_dispatcher->DispatchFromController(in_string, interface->GetInterfaceName());
-  }      
+  }
 }
 

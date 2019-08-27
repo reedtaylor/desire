@@ -6,28 +6,25 @@
 
 #include "dispatcher.h"
 
-void TcpInterface::Init(__attribute__((unused)) Dispatcher *dispatcher_ptr) {
-  // this should never happen but we are obliged to implement this method
-  LOG(FATAL) << "TcpInterface: Called Init() with missing port";
-}
-
-
 void TcpInterface::Init(Dispatcher *dispatcher_ptr, int file_descriptor) {
   DLOG(INFO) << "TcpInterface: Connecting to fd " << file_descriptor;
-
-  // todo: move this into the base Init override and assert that _file_handle is not null there
-  _dispatcher = dispatcher_ptr;
   
   _file_handle = fdopen(file_descriptor, "r+");
- 
-  if (file_descriptor < 0) {
-    // todo: verify this is a valid way to assess a good file open
-    LOG(FATAL) << "TcpInterface: Could not open "
-	       << file_descriptor
+  if ((file_descriptor < 0) || (_file_handle == NULL)) {
+    LOG(FATAL) << "TcpInterface: Could not open " << file_descriptor
 	       << " -- Error: " << strerror(errno);
   }
-  LOG(INFO) << "TcpInterface: Opened "
-	    << file_descriptor;
+  LOG(INFO) << "TcpInterface: Opened " << file_descriptor;
+	    
+  return Init(dispatcher_ptr);
+}
+
+void TcpInterface::Init(Dispatcher *dispatcher_ptr) {
+  // ensure this is OK and prevent direct calls to this function
+  CHECK_NOTNULL(_file_handle);
+
+  CHECK_NOTNULL(dispatcher_ptr);
+  _dispatcher = dispatcher_ptr;
 }
 
 void TcpInterface::Send(const std::string message) {
