@@ -35,11 +35,13 @@ class Interface {
   // Remember: it is vital for all nonabstract Interface inheritor classes
   // to set the _dispatcher pointer (from this base class) to refer to
   // the Dispatcher* pointer (handed to this function)
-  virtual void Init(Dispatcher *) = 0;
+  // returns nonnegative on success, negative on fail
+  virtual int Init(Dispatcher *) = 0;
 
   // Convert a std::string into whatever form is needed and send it out
   // on the real interface
-  virtual void Send(const std::string /* message */) = 0;
+  // returns nonnegative on success, negative on fail
+  virtual int Send(const std::string /* message */) = 0;
 
   // Pull a single (likely newline terminated) message off the interface
   // and return it as a const std::string

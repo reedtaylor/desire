@@ -25,11 +25,11 @@ public:
   // also stash a pointer to the filehandle in _file_handle
   // for use by Recv() and Send().
   // do not call Init(Dispatcher *) directly; we need the fd
-  void Init(Dispatcher *dispatcher_ptr, int file_descriptor);
-  void Init(Dispatcher *dispatcher_ptr) override;
+  int Init(Dispatcher *dispatcher_ptr, int file_descriptor);
+  int Init(Dispatcher *dispatcher_ptr) override;
 
   // Push a string out onto the TCP device
-  void Send(const std::string message) override;
+  int Send(const std::string message) override;
 
   // Get a string from the TCP device
   const std::string Recv() override;

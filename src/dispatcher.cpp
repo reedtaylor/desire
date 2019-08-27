@@ -60,7 +60,12 @@ void Dispatcher::Init() {
 
 void Dispatcher::DispatchFromDE(const std::string message) {
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
-    interface->Send(message);
+    int sent = interface->Send(message);
+    if (sent < 0) {
+      LOG(INFO) << "Dispatcher: Send to " << interface->GetInterfaceName() << " failed; freeing.";
+      RemoveAndFreeController(interface);
+      return;
+    }
     VLOG(4) << "Dispatcher:  >>> Sent " << trim(message) << " to " << interface->GetInterfaceName();
   }
 }
@@ -168,10 +173,18 @@ void Dispatcher::RunDispatchLoop() {
 }
 
 void Dispatcher::CallBack(__attribute__((unused)) int fd,
-	      __attribute__((unused)) short what,
-	      void* interface_ptr) {
+			  __attribute__((unused)) short what,
+			  void* interface_ptr) {
   Interface *interface = (Interface *)interface_ptr;
-  const std::string in_string = interface->Recv(); 
+  const std::string in_string = interface->Recv();
+
+  // empty string means bad read
+  if(in_string.length() == 0) {
+    LOG(INFO) << "Dispatcher: Interface " << interface->GetInterfaceName()
+	      << " read failed.  Closing & freeing";
+    interface->_dispatcher->RemoveAndFreeController(interface);
+    return;
+  }
   if (interface->GetInterfaceName() == DE1_MACHINE_NAME) {
     interface->_dispatcher->DispatchFromDE(in_string);
   } else {

@@ -24,11 +24,11 @@ class StdioInterface : public Interface {
   
   // Attach the _dispatcher pointer
   // (little to no setup is needed for stdio)
-  void Init(Dispatcher *dispathcher_ptr) override;
+  int Init(Dispatcher *dispathcher_ptr) override;
   
   
   // Push a string to stdout
-  void Send(const std::string message) override;
+  int Send(const std::string message) override;
   
   // Get a string from stdin
   const std::string Recv() override;
