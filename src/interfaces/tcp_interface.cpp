@@ -45,14 +45,17 @@ int TcpInterface::Send(const std::string message) {
 
 const std::string TcpInterface::Recv() {
   char in_string[_TCP_CHARBUF_SIZE] = "";
-  if (!fgets(in_string, _TCP_CHARBUF_SIZE, _file_handle)) {
-    LOG(INFO) << "TcpInterface: Controller TCP " << GetInterfaceName()
-	      << " read failed -- Error: " << strerror(errno);
-    return std::string("");
+  fgets(in_string, _TCP_CHARBUF_SIZE, _file_handle);
+  if (feof(_file_handle) || ferror(_file_handle)) {
+    if (strlen(in_string) > 0) {
+      LOG(WARNING) << "TcpInterface: Controller TCP " << GetInterfaceName()
+		<< " read failed; input buffer '" << in_string
+		<< "' not newline-terminated. Dropping message.";
+    }
+    return std::string("");   // empty string signals dead interface
   }
 
   const std::string message(in_string);
-  DCHECK(message.length() > 0); // we are using zero length to mean bad read
   return message;
 }
 
