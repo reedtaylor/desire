@@ -12,9 +12,9 @@
 3. Waveshare Serial Expansion HAT (SC16IS752) ~$15.00 USD ([US:Amazon](https://www.amazon.com/gp/product/B07KGGHBPW) [Aliexpress](https://www.aliexpress.com/i/32967417322.html))
  - Provides two high-quality UART interfaces perfect for connecting to the DE1 machine and to the Decent BLE adaptor
  - Other 3.3v serial UART devices may work.  Note that the DE BLE adaptor requires a 3.3v (not 5v) supply. 
-4. 12+ Female-Female jumper wires ~$2.00 USD ([US:Adafruit](https://www.adafruit.com/product/1950))
+4. 6+ Female-Female jumper wires, and 5+ Male-Feemale jumper wires ~$2.00 USD ([US:Adafruit](https://www.adafruit.com/product/1950))
  - Currently one ribbon of 5 wires and one ribbon of 6 wires are needed to connect to the DE1 machine and Decent BLE adaptor, respectively
- - The connection to the DE1 Machine needs ~6in / 15cm length in order to comfortably place the Raspberry Pi on top of the machine
+ - The connection to the DE1 Machine (Male-female) needs ~6in / 15cm length in order to comfortably place the Raspberry Pi on top of the machine.  The connection to the BLE adaptor can be shorter if desired.
  - Note that when the a custom circuit board (PCB) for this project becomes available, the cabling needs may change
  
  ## Software Setup
