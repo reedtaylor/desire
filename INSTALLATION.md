@@ -65,5 +65,5 @@ __CAUTION -- YOU MIGHT WRECK YOUR MACHINE, OR WORSE!__
 3. Remove the translucent back panel according to the instructions at the top of [this post](https://3.basecamp.com/3671212/buckets/7351439/documents/1798545355)  (Remove 4 T10 torx screws & the knob from the water supply lifter)
 4. Carefully remove the Bluetooth adaptor from its socket by pinching it on the sides and pulling.  Avoid touching the pins or the surface of the circuit board.  Do not use much force.  Carefully set aside in a safe place.
 5. Attach a 5-pin ribbon cable to the BOTTOM 5 positons of the LEFT-HAND header on the machine, as you look at it from the rear.  This is the header closer to the steam-wand side.
-![Wire placement](https://user-images.githubusercontent.com/8826853/63827685-0c18a400-c932-11e9-9673-1e8e1a52347d.png)
+![Wire placement](https://user-images.githubusercontent.com/8826853/63828449-7a5e6600-c934-11e9-8ddf-dcdbb7588da0.png)
 6. __STAY TUNED__ writing will continue...
