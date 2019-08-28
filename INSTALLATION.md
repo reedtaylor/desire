@@ -1,6 +1,6 @@
 # How to Install DESIRE
 
-##Parts needed (with example sources):
+## Parts needed (with example sources):
 
 1. Raspberry Pi 3B+ ~$35.00 USD ([US:Adafruit](https://www.adafruit.com/product/3775))
  - Other models may work, Pi 3B+ is what has been tested
@@ -17,7 +17,7 @@
  - The connection to the DE1 Machine needs ~6in / 15cm length in order to comfortably place the Raspberry Pi on top of the machine
  - Note that when the a custom circuit board (PCB) for this project becomes available, the cabling needs may change
  
- ##Software Setup
+ ## Software Setup
  
 1. Install [Raspbian Buster](https://www.raspberrypi.org/downloads/raspbian/) on the SD card
  - Note, do not use Raspbian Jessie or earlier as we make use of kernel modules included as of Buster
@@ -50,3 +50,20 @@
 7. Download and build DESIRE
  - Execute the command `git clone https://github.com/reedtaylor/desire.git`
  - Execute the commands `cd desire; make`
+
+## Hardware Setup
+__CAUTION -- YOU MIGHT WRECK YOUR MACHINE, OR WORSE!__
+
+ - This process will get easier after we have a circuit board (PCB) made to simplify all the wiring.  
+ - If you have no experience with electronics work of this kind, this might not be a good starter project as you are messing with a multi-thousand-dollar machine that happens to shoot out boiling hot water!   
+  - John is a stand-up guy but he's made it clear that tinkerers who wreck their machines will need to pay for the replacement parts etc..  
+  
+  __You are doing this at your own risk!  If you feel uncertain, don't do it yourself -- find someone with experience!__
+
+1. Power off the Decent machine and unplug it from power (remove the power cable from the rear of the machine).
+2. If installed, remove the tubing and Cat5 cable for the plubming/catering kit
+3. Remove the translucent back panel according to the instructions at the top of [this post](https://3.basecamp.com/3671212/buckets/7351439/documents/1798545355)  (Remove 4 T10 torx screws & the knob from the water supply lifter)
+4. Carefully remove the Bluetooth adaptor from its socket by pinching it on the sides and pulling.  Avoid touching the pins or the surface of the circuit board.  Do not use much force.  Carefully set aside in a safe place.
+5. Attach a 5-pin ribbon cable to the BOTTOM 5 positons of the LEFT-HAND header on the machine, as you look at it from the rear.  This is the header closer to the steam-wand side.
+![Wire placement](https://user-images.githubusercontent.com/8826853/63827685-0c18a400-c932-11e9-9673-1e8e1a52347d.png)
+6. __STAY TUNED__ writing will continue...
