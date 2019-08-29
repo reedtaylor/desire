@@ -40,16 +40,6 @@
 5. Confirm that the Waveshare SC16IS752 card is now working properly
    * Execute `ls /dev/ttySC*`
    * Verify you can see the devices `/dev/ttySC0` and `/dev/ttySC1`
-6. Install some needed libraries and make sure the system is up-to-date
-   * Execute the following commands: 
- `sudo apt-get update
- blah`
-   * Execute the command `sudo apt-get upgrade`
-   * Execute the command `sudo apt-get install libgoogle-glog-dev libevent-dev libgflags-dev`
-   * Reboot by executing `sudo reboot`
-7. Download and build DESIRE
-   * Execute the command `git clone https://github.com/reedtaylor/desire.git`
-   * Execute the commands `cd desire; make`
 
 ## Hardware Setup
 __CAUTION -- YOU MIGHT WRECK YOUR MACHINE, OR WORSE!__
@@ -62,27 +52,91 @@ __CAUTION -- YOU MIGHT WRECK YOUR MACHINE, OR WORSE!__
 
 1. Power off the Decent machine and unplug it from power (remove the power cable from the rear of the machine).
 
-2. If installed, remove the tubing and Cat5 cable for the plubming/catering kit
+2. Power down the Raspberry Pi and disconnect it from power.
 
-3. Remove the translucent back panel according to the instructions at the top of [this post](https://3.basecamp.com/3671212/buckets/7351439/documents/1798545355)  (Remove 4 T10 torx screws & the knob from the water supply lifter)
+3. If installed, remove the tubing and Cat5 cable for the plubming/catering kit
 
-4. Carefully remove the Bluetooth adaptor from its socket by pinching it on the sides and pulling.  Avoid touching the pins or the surface of the circuit board.  Do not use much force.  Carefully set aside in a safe place.
+4. Remove the translucent back panel according to the instructions at the top of [this post](https://3.basecamp.com/3671212/buckets/7351439/documents/1798545355)  (Remove 4 T10 torx screws & the knob from the water supply lifter)
 
-5. Attach a 5-wire ribbon cable to the BOTTOM 5 positons of the LEFT-HAND header on the machine, as you look at it from the rear.  This is the header closer to the steam-wand side.
+5. Carefully remove the Bluetooth adaptor from its socket by pinching it on the sides and pulling.  Avoid touching the pins or the surface of the circuit board.  Do not use much force.  Carefully set aside in a safe place.
+
+6. Attach a 5-wire ribbon cable to the BOTTOM 5 positons of the LEFT-HAND header on the machine, as you look at it from the rear.  This is the header closer to the steam-wand side.
 ![Wire placement](https://user-images.githubusercontent.com/8826853/63828449-7a5e6600-c934-11e9-8ddf-dcdbb7588da0.png)
 
-6. Connect the other end of the 5-wire ribbon cable to the Waveshare SC16IS752 as shown below.  
+7. Connect the other end of the 5-wire ribbon cable to the Waveshare SC16IS752 as shown below.  
    * Note that here we are connecting to UART "A" so pins should be labeled "RTSA, CTSA, RDXDA"
    * Note that the wire numbering 1-6 in the image is counting from top to bottom on the UART.  Double check the 
    * Note that wire 1 is not connected on either side
 
 ![Wiring diagram - DE to UART](https://user-images.githubusercontent.com/8826853/63908733-316ae800-c9ee-11e9-8edf-31715db8afa0.png)
 
-7. Retrieve the Bluetooth adaptor removed in step 4, and connect it using a 6-wire ribbon cable to the Waveshare SC16IS752 as shown below.  
+8. Retrieve the Bluetooth adaptor removed in step 4, and connect it using a 6-wire ribbon cable to the Waveshare SC16IS752 as shown below.  
    * Note that here we are connecting to UART "B" so pins should be labeled "RTSB, CTSB, RDXDB"
    * Note that the BT adaptor is shown here face-on, with the notch at the bottom.  In this orientation you are attaching wires to back of the BT adaptor, at the top-left.
    * Note that wire 1 _is_ connected for this device, unlike for the DE 
    * Note that several pairs of wires (3 and 4, 5 and 6) are "flipped" for this device, when comparing to how the DE was wired
 
-![Wiring diagram - BLE to UART](https://user-images.githubusercontent.com/8826853/63909022-4c8a2780-c9ef-11e9-85ed-efbdae29ebd8.png)
+![Wiring diagram - BLE to UART](https://user-images.githubusercontent.com/8826853/63909283-1ac59080-c9f0-11e9-874c-202ea894fa10.png)
+
+## Software setup
+
+1. Reconnect power to the raspberry pi and sign in
+
+2. Install some needed libraries and make sure the system is up-to-date
+   * Execute the following commands: 
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install libgoogle-glog-dev libevent-dev libgflags-dev
+sudo reboot
+```
+   
+3. Download and build DESIRE by running the commands:
+```
+cd ~
+git clone https://github.com/reedtaylor/desire.git
+cd desire
+make
+```
+
+4. Run desire in a verbose debugging mode by runnnig the command
+```
+~/desire/build/apps/desire -v=4 -logtostderr
+```
+
+5. Switch on the DE and note that Desire reflects a few messages coming from the machine
+
+6. If it hasn't happened already, re-connect your stock tablet to the DE BLE adaptor.  This may involve going into the Settings --> Machine tab on the decent app, tapping "Search" and then tapping the shown Bluetooth ID of the machine.  For more details, see [this page] on how to pair from scratch.  (Remember, as far as the tablet / app are concerned, they are still talking to the same machine since it's the self-same Bluetooth adaptor.)
+
+7. You should shortly start seeing a lot of messages in your terminal window indicating that DESIRE is passing messages.   Similar to the following:
+```
+I0829 00:15:41.185611  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1DEB001200002FFC304A0B3EE95A0000300066
+I0829 00:15:41.190371  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [Q]177C0F00
+I0829 00:15:41.391851  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E04001400002FBF304C133ED05A0000300067
+I0829 00:15:41.399902  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [Q]177B0F00
+I0829 00:15:41.601378  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E1D001300002FC9304C343EE95A0000300067
+I0829 00:15:41.808393  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E36001200002FDD304C983ED05A0000300067
+I0829 00:15:42.017215  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E4F001300002FBF304B763ED05A0000300067
+I0829 00:15:42.225594  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E68001300002FD3304CCD3EE15A0000300067
+I0829 00:15:42.435197  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E81001300002FB5304E1F3ED95A0000300067
+I0829 00:15:42.643450  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1E9A001100002FD3304E763EC85A0000300067
+I0829 00:15:42.851097  3303 dispatcher.cpp:70] Dispatcher:  >>> DE1-->BLE sent [M]1EB3001300002FBF304F3F3EE15A0000300067
+```
+8. Check the tablet app to confirm that:
+   * Temperature appears to be updating as expected
+   * Actions taken (e.g. start and stop flush) are reflected on the machine
+
+9. Congratulations, the basics of the DESIRE system are working properly!   Let's kill the instance of DESIRE that is running and put it into a less chatty mode by typing
+```
+killall desire
+nohup ~/desire/build/apps/desire -v=3 &
+```
+
+If you ever need to restart desire, e.g. if the Raspberry Pi reboots, you can do so by running the above commands.
+
+Desire will now be running in the background.  You can check on the status of the running program by running `cat /tmp/desire.INFO`.  Note that for performance reasons, writes to this logfile is buffered so may not be 100% up to date.  If you want realtime logging from desire, use the `-logtostderr` command line option.
+
+
+__Coming later:__
+* Installing DESIRE as a proper system service
 
