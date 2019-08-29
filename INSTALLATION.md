@@ -85,6 +85,8 @@ __CAUTION -- YOU MIGHT WRECK YOUR MACHINE, OR WORSE!__
 
 ![Wiring diagram - BLE to UART](https://user-images.githubusercontent.com/8826853/63909283-1ac59080-c9f0-11e9-874c-202ea894fa10.png)
 
+9\. All done!  Things are likely to be dangling all over the place; we are just going to live with this until the PCB is implemented.
+
 ## Software setup
 
 1\. Reconnect power to the raspberry pi and sign in
@@ -111,9 +113,9 @@ make
 ~/desire/build/apps/desire -v=4 -logtostderr
 ```
 
-5\. Switch on the DE and note that Desire reflects a few messages coming from the machine
+5\. Switch on the DE and note that DESIRE reflects a few messages coming from the machine
 
-6\. If it hasn't happened already, re-connect your stock tablet to the DE BLE adaptor.  This may involve going into the Settings --> Machine tab on the decent app, tapping "Search" and then tapping the shown Bluetooth ID of the machine.  For more details, see [this page] on how to pair from scratch.  (Remember, as far as the tablet / app are concerned, they are still talking to the same machine since it's the self-same Bluetooth adaptor.)
+6\. If it hasn't automatically happened already, re-connect your stock tablet to the DE BLE adaptor.  This may involve going into the Settings --> Machine tab on the decent app, tapping "Search" and then tapping the shown Bluetooth ID of the machine.  For more details, see [this page](https://3.basecamp.com/3671212/buckets/7351439/documents/2015673573) on how to pair from scratch.  (Remember, as far as the tablet / app are concerned, they are still talking to the same machine since it's the self-same Bluetooth adaptor.  So we are not expecting to have to do some kind of deep bluetooth reset at this moment.)
 
 7\. You should shortly start seeing a lot of messages in your terminal window indicating that DESIRE is passing messages.   Similar to the following:
 ```
