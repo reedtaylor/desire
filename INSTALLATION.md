@@ -61,9 +61,28 @@ __CAUTION -- YOU MIGHT WRECK YOUR MACHINE, OR WORSE!__
   __You are doing this at your own risk!  If you feel uncertain, don't do it yourself -- find someone with experience!__
 
 1. Power off the Decent machine and unplug it from power (remove the power cable from the rear of the machine).
+
 2. If installed, remove the tubing and Cat5 cable for the plubming/catering kit
+
 3. Remove the translucent back panel according to the instructions at the top of [this post](https://3.basecamp.com/3671212/buckets/7351439/documents/1798545355)  (Remove 4 T10 torx screws & the knob from the water supply lifter)
+
 4. Carefully remove the Bluetooth adaptor from its socket by pinching it on the sides and pulling.  Avoid touching the pins or the surface of the circuit board.  Do not use much force.  Carefully set aside in a safe place.
-5. Attach a 5-pin ribbon cable to the BOTTOM 5 positons of the LEFT-HAND header on the machine, as you look at it from the rear.  This is the header closer to the steam-wand side.
+
+5. Attach a 5-wire ribbon cable to the BOTTOM 5 positons of the LEFT-HAND header on the machine, as you look at it from the rear.  This is the header closer to the steam-wand side.
 ![Wire placement](https://user-images.githubusercontent.com/8826853/63828449-7a5e6600-c934-11e9-8ddf-dcdbb7588da0.png)
-6. __STAY TUNED__ writing will continue...
+
+6. Connect the other end of the 5-wire ribbon cable to the Waveshare SC16IS752 as shown below.  
+   * Note that here we are connecting to UART "A" so pins should be labeled "RTSA, CTSA, RDXDA"
+   * Note that the wire numbering 1-6 in the image is counting from top to bottom on the UART.  Double check the 
+   * Note that wire 1 is not connected on either side
+
+![Wiring diagram - DE to UART](https://user-images.githubusercontent.com/8826853/63908733-316ae800-c9ee-11e9-8edf-31715db8afa0.png)
+
+7. Retrieve the Bluetooth adaptor removed in step 4, and connect it using a 6-wire ribbon cable to the Waveshare SC16IS752 as shown below.  
+   * Note that here we are connecting to UART "B" so pins should be labeled "RTSB, CTSB, RDXDB"
+   * Note that the BT adaptor is shown here face-on, with the notch at the bottom.  In this orientation you are attaching wires to back of the BT adaptor, at the top-left.
+   * Note that wire 1 _is_ connected for this device, unlike for the DE 
+   * Note that several pairs of wires (3 and 4, 5 and 6) are "flipped" for this device, when comparing to how the DE was wired
+
+![Wiring diagram - BLE to UART](https://user-images.githubusercontent.com/8826853/63909022-4c8a2780-c9ef-11e9-85ed-efbdae29ebd8.png)
+
