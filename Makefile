@@ -8,6 +8,7 @@ TARGET   := desire
 INCLUDE  := -Iinclude/
 SRC      :=                      \
    $(wildcard src/interfaces/*.cpp) \
+   $(wildcard src/parser/*.cpp) \
    $(wildcard src/*.cpp)         \
 
 OBJECTS := $(SRC:%.cpp=$(OBJ_DIR)/%.o)

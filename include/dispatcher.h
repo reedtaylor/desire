@@ -10,6 +10,7 @@
 #include "tcp_socket.h"
 #include "interfaces/tcp_interface.h"
 #include "event_base.h"
+#include "parser/parser.h"
 
 
 
@@ -131,6 +132,9 @@ class Dispatcher {
 
   // Event lib wrapper class instance
   EventBase *_event_base;
+
+  // Parser class instance
+  Parser *_parser;
 };
 
 

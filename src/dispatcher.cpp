@@ -7,6 +7,7 @@
 #include "interface.h"
 #include "tcp_socket.h"
 #include "string_util.h"
+#include "parser/parser.h"
 
 
 // Define command line flags (via gflags)
@@ -25,6 +26,9 @@ void Dispatcher::Init() {
   _event_base = new EventBase();
   _event_base->Init();
 
+  // Instantiate the parser
+  _parser = new Parser();
+  
   // Add the special interface for the DE (note, adds a read event directly
   // rather than calling AddController since this is not a controller)
   _de1_uart = new UartInterface();
@@ -55,10 +59,17 @@ void Dispatcher::Init() {
   TcpSocket *tcp_socket = new TcpSocket();
   tcp_socket->Init(this);
   AddReadEventForTcpSocket(tcp_socket);
+
 }
 
 
 void Dispatcher::DispatchFromDE(const std::string message) {
+  if (_parser->IsWellFormed(message)) {
+      LOG(INFO) << "Well formed message";
+    } else {
+      LOG(INFO) << "What";
+    }
+	
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
     int sent = interface->Send(message);
     if (sent < 0) {
