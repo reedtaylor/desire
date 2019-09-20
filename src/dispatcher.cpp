@@ -69,7 +69,7 @@ void Dispatcher::DispatchFromDE(const std::string message) {
   } else {
     // Parse / Unpack some messages for logging
     U16 command = _parser->GetCommand(message);
-    LOG(INFO) << "Hello command " << (char)command;
+    VLOG(4) << "Hello command " << (char)command;
     switch (command) {
     case ((U16) 'N'):
       //T_StateInfo I_StateInfo;
@@ -78,14 +78,14 @@ void Dispatcher::DispatchFromDE(const std::string message) {
       T_WaterLevels I_WaterLevels;
       std::string hexString = _parser->GetHexString(message);
 
-      LOG(INFO) << "Hexstring: " << hexString;
+      VLOG(4) << "Hexstring: " << hexString;
 
       _parser->Unpack((U8 *)(&I_WaterLevels.Level), hexString, sizeof(I_WaterLevels.Level));
       hexString.erase(0, sizeof(I_WaterLevels.Level));
       _parser->Unpack((U8 *)(&I_WaterLevels.StartFillLevel), hexString, sizeof(I_WaterLevels.StartFillLevel));
 
-      LOG(INFO) << "Hex: " << std::hex << I_WaterLevels.Level.value;
-      LOG(INFO) << "DE1 Water Level: " << (I_WaterLevels.Level.value>>8) + (double)(I_WaterLevels.Level.value & 0xFF)/(1<<8);
+      VLOG(4) << "Hex: " << std::hex << I_WaterLevels.Level.value;
+      VLOG(4) << "DE1 Water Level: " << (I_WaterLevels.Level.value>>8) + (double)(I_WaterLevels.Level.value & 0xFF)/(1<<8);
       break;
     }
   }
