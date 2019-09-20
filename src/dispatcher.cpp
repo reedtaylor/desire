@@ -64,12 +64,32 @@ void Dispatcher::Init() {
 
 
 void Dispatcher::DispatchFromDE(const std::string message) {
-  if (_parser->IsWellFormed(message)) {
-      LOG(INFO) << "Well formed message";
-    } else {
-      LOG(INFO) << "What";
+  if (!_parser->IsWellFormed(message)) {
+    LOG(WARNING) << "Dispatcher got badly-formed message from DE: " << trim(message);
+  } else {
+    // Parse / Unpack some messages for logging
+    U16 command = _parser->GetCommand(message);
+    LOG(INFO) << "Hello command " << (char)command;
+    switch (command) {
+    case ((U16) 'N'):
+      //T_StateInfo I_StateInfo;
+      break;
+    case ((U16) 'Q'):
+      T_WaterLevels I_WaterLevels;
+      std::string hexString = _parser->GetHexString(message);
+
+      LOG(INFO) << "Hexstring: " << hexString;
+
+      _parser->Unpack((U8 *)(&I_WaterLevels.Level), hexString, sizeof(I_WaterLevels.Level));
+      hexString.erase(0, sizeof(I_WaterLevels.Level));
+      _parser->Unpack((U8 *)(&I_WaterLevels.StartFillLevel), hexString, sizeof(I_WaterLevels.StartFillLevel));
+
+      LOG(INFO) << "Hex: " << std::hex << I_WaterLevels.Level.value;
+      LOG(INFO) << "DE1 Water Level: " << (I_WaterLevels.Level.value>>8) + (double)(I_WaterLevels.Level.value & 0xFF)/(1<<8);
+      break;
     }
-	
+  }
+  
   for (auto& interface: _controllers) { // fancy c++11 iterator shit
     int sent = interface->Send(message);
     if (sent < 0) {

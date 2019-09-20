@@ -13,15 +13,32 @@ public:
   bool IsWellFormed(const std::string message);
 
   // extract the command type from the message (as a single uppercase char)
-  //const char GetCommand(std::string message);
+  U16 GetCommand(const std::string message);
 
-  // unpack the hex string into a specific struct
-  //template <typename T> Unpack(T *value, std::string message);
+  // extract the hex string from the message
+  std::string GetHexString(const std::string message);
 
+  // unpack a hex string into a specific struct,
+  // which has been passed in as a generic byte array pointer
+    bool Unpack(U8 *value, std::string hexString, U16 len);
+
+    
 private:
 
-U8 getLengthForCID(U16 CID) {
-  switch (CID) {
+  U8 CharToNybble(U8 inChar) {
+    if ('0' <= inChar && inChar <= '9') {
+      return (U8)(inChar - '0');
+    } else if ('A' <= inChar && inChar <= 'F') {
+      return (U8)(inChar - 'A' + 10);
+    } else if ('a' <= inChar && inChar <= 'f') {
+      return (U8)(inChar - 'a' + 10);
+    } else {
+      return (U8)(-1);
+    }
+  }
+  
+  U8 GetLengthForCommand(U16 command) {
+    switch (command) {
     case ((U16) 'A'):
       return sizeof(T_Versions); // R, Versions, See T_Versions
     case ((U16) 'B'):
