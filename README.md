@@ -1,3 +1,7 @@
+# THE DESIRE PROJECT IS ON HOLD
+
+Please see [Plucky](https://github.com/reedtaylor/plucky) for the more recent project work.
+
 # desire
 desire: decent espresso serial interface repeater
 
